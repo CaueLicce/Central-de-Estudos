@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engenharia de Requisitos — Aula 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b1f3a;
+    --ink-2:#132c52;
+    --paper:#f4f1ea;
+    --paper-2:#eae5d9;
+    --blue:#2f6fed;
+    --blue-deep:#1a3f8f;
+    --cyan:#28b5c9;
+    --orange:#e8792c;
+    --red:#c94b3f;
+    --green:#2f9e6e;
+    --line:#c9c2af;
+    --grid: rgba(47,111,237,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+  }
+  .app{
+    display:grid;
+    grid-template-columns: 280px 1fr;
+    min-height:100vh;
+  }
+  /* Sidebar */
+  .sidebar{
+    background: var(--ink);
+    background-image: radial-gradient(circle at 20% 0%, rgba(47,111,237,0.35), transparent 45%);
+    color:#e7ecf9;
+    padding:28px 18px 28px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+    border-right:3px solid var(--ink);
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:1.15rem;
+    letter-spacing:.2px;
+    padding:0 8px 6px;
+    border-bottom:1px dashed rgba(255,255,255,0.25);
+    margin-bottom:6px;
+  }
+  .btn-voltar{
+    display:flex;
+    align-items:center;
+    gap:.4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#8fa6d6;
+    text-decoration:none;
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:6px;
+    padding:6px 10px;
+    margin:0 8px 14px;
+    transition:color .2s, border-color .2s, background .2s;
+  }
+  .btn-voltar:hover{
+    color:#28b5c9;
+    border-color:#28b5c9;
+    background:rgba(40,181,201,0.08);
+  }
+  .brand small{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    font-size:.68rem;
+    letter-spacing:1.5px;
+    color:var(--cyan);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .nav-group-title{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-size:.62rem;
+    color:#8fa3d1;
+    margin:18px 10px 6px;
+  }
+  .nav-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:none;
+    color:#c9d4ee;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:.85rem;
+    padding:9px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, transform .1s ease;
+  }
+  .nav-btn .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    color:var(--cyan);
+    min-width:20px;
+  }
+  .nav-btn:hover{ background:rgba(255,255,255,0.06); color:#fff; }
+  .nav-btn.active{
+    background: linear-gradient(90deg, rgba(47,111,237,0.85), rgba(40,181,201,0.35));
+    color:#fff;
+    font-weight:600;
+    transform:translateX(2px);
+  }
+
+  /* Main */
+  main{ padding: 40px clamp(20px, 5vw, 64px) 100px; max-width:920px; }
+  .section{ display:none; animation: fade .35s ease; }
+  .section.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .kicker{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:.72rem;
+    color:var(--blue-deep);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-size:clamp(1.7rem, 3.4vw, 2.5rem);
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-size:1.5rem;
+    margin:34px 0 12px;
+    color:var(--ink-2);
+    border-bottom:2px solid var(--line);
+    padding-bottom:8px;
+  }
+  h3{
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    margin:22px 0 8px;
+    color:var(--blue-deep);
+  }
+  p{ margin:0 0 12px; font-size:.98rem; }
+  .lede{ font-size:1.05rem; color:#3b4a63; max-width:70ch;}
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin:14px 0;
+    box-shadow: 2px 3px 0 rgba(11,31,58,0.06);
+  }
+  .card.blue{ border-color:var(--blue); background:#eef4ff; }
+  .card.orange{ border-color:var(--orange); background:#fff4ea; }
+  .card.green{ border-color:var(--green); background:#eefaf3; }
+
+  .analogy{
+    position:relative;
+    background: var(--paper-2);
+    border-left:4px solid var(--orange);
+    border-radius:0 10px 10px 0;
+    padding:14px 18px;
+    margin:16px 0;
+    font-size:.94rem;
+  }
+  .analogy::before{
+    content:"💡 ANALOGIA";
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.65rem;
+    letter-spacing:1.5px;
+    color:var(--orange);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+
+  .attention{
+    background:#fdecea;
+    border:1.5px dashed var(--red);
+    border-radius:10px;
+    padding:12px 16px;
+    margin:14px 0;
+    font-size:.92rem;
+  }
+  .attention strong{ color:var(--red); }
+
+  ul, ol{ padding-left:22px; margin:10px 0; }
+  li{ margin-bottom:6px; font-size:.96rem; }
+
+  strong{ color:var(--ink); }
+
+  code, .code-inline{
+    font-family:'IBM Plex Mono', monospace;
+    background:#eef1f7;
+    padding:1px 6px;
+    border-radius:4px;
+    font-size:.85em;
+    color:var(--blue-deep);
+  }
+  pre{
+    background: var(--ink);
+    color:#dbe6ff;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.85rem;
+    padding:16px 18px;
+    border-radius:10px;
+    overflow-x:auto;
+    line-height:1.7;
+    margin:14px 0;
+  }
+  pre .kw{ color:var(--cyan); font-weight:600;}
+  pre .cm{ color:#8fa3d1; font-style:italic;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0;
+    font-size:.9rem;
+    background:#fff;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow: 2px 3px 0 rgba(11,31,58,0.06);
+  }
+  th, td{ padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  th{ background:var(--ink); color:#fff; font-family:'IBM Plex Mono', monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:1px;}
+  tr:nth-child(even) td{ background:#f8f6f0; }
+  td.col-trad{ border-left:3px solid var(--orange); }
+  td.col-agil{ border-left:3px solid var(--cyan); }
+
+  .flow{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    margin:18px 0;
+  }
+  .flow .step{
+    background:#fff;
+    border:1.5px solid var(--ink);
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:.85rem;
+    font-weight:600;
+    min-width:120px;
+    text-align:center;
+  }
+  .flow .arrow{ font-size:1.3rem; color:var(--blue); }
+
+  .badge{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:2px 9px;
+    border-radius:20px;
+    font-weight:600;
+  }
+  .badge.trad{ background:#fde3d3; color:#a04b16; }
+  .badge.agil{ background:#d3f3f8; color:#0e6e7d; }
+
+  .quiz-q{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+    margin:16px 0;
+  }
+  .quiz-q p.question{ font-weight:600; margin-bottom:10px; }
+  .quiz-opts{ display:flex; flex-direction:column; gap:8px; }
+  .quiz-opt{
+    text-align:left;
+    background:#f8f6f0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:.9rem;
+    transition:.15s;
+  }
+  .quiz-opt:hover{ background:#eef1f7; }
+  .quiz-opt.correct{ background:#d9f2e3; border-color:var(--green); font-weight:600;}
+  .quiz-opt.wrong{ background:#fbdedb; border-color:var(--red); }
+  .quiz-fb{ margin-top:8px; font-size:.85rem; display:none; padding:8px 10px; border-radius:6px;}
+  .quiz-fb.show{ display:block; }
+  .quiz-fb.ok{ background:#d9f2e3; color:#1e6b45; }
+  .quiz-fb.no{ background:#fbdedb; color:#94301f; }
+
+  .exercise{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:18px 20px;
+    margin:16px 0;
+  }
+  .gabarito-btn{
+    margin-top:10px;
+    background:var(--blue-deep);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.75rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+  }
+  .gabarito{
+    display:none;
+    margin-top:12px;
+    background:var(--paper-2);
+    border-left:4px solid var(--blue-deep);
+    padding:12px 16px;
+    border-radius:0 8px 8px 0;
+    font-size:.9rem;
+  }
+  .gabarito.show{ display:block; }
+
+  .summary-list li{ margin-bottom:9px; }
+  .final-box{
+    background: var(--ink);
+    color:#e7ecf9;
+    border-radius:14px;
+    padding:22px 24px;
+    margin-top:20px;
+  }
+  .final-box h3{ color:#fff; margin-top:0;}
+
+  .progress-track{
+    height:5px;
+    background:var(--paper-2);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:24px;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--blue), var(--cyan));
+    width:5%;
+    transition:width .3s ease;
+  }
+
+  @media (max-width: 820px){
+    .app{ grid-template-columns: 1fr; }
+    .sidebar{ position:relative; height:auto; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar">
+    <a class="btn-voltar" href="../">← central de estudos</a>
+    <div class="brand">Engenharia de Requisitos<small>Engenharia de Software · Aula 2</small></div>
+
+    <div class="nav-group-title">Abertura</div>
+    <button class="nav-btn active" data-target="s0"><span class="num">00</span> Visão Geral</button>
+
+    <div class="nav-group-title">O Caminho Clássico</div>
+    <button class="nav-btn" data-target="s1"><span class="num">01</span> O que é um Requisito?</button>
+    <button class="nav-btn" data-target="s2"><span class="num">02</span> Processo Clássico (Sommerville)</button>
+    <button class="nav-btn" data-target="s3"><span class="num">03</span> Onde o Modelo Tradicional Falha</button>
+
+    <div class="nav-group-title">A Virada Ágil</div>
+    <button class="nav-btn" data-target="s4"><span class="num">04</span> Manifesto Ágil e Requisitos</button>
+    <button class="nav-btn" data-target="s5"><span class="num">05</span> Fatiamento de Requisitos</button>
+    <button class="nav-btn" data-target="s6"><span class="num">06</span> Requisitos Não Funcionais no Ágil</button>
+
+    <div class="nav-group-title">Requisitos na Prática Ágil</div>
+    <button class="nav-btn" data-target="s7"><span class="num">07</span> Rastreabilidade Moderna</button>
+    <button class="nav-btn" data-target="s8"><span class="num">08</span> Da Elicitação ao Discovery</button>
+    <button class="nav-btn" data-target="s9"><span class="num">09</span> User Stories (os 3 Cs)</button>
+    <button class="nav-btn" data-target="s10"><span class="num">10</span> Prototipagem</button>
+    <button class="nav-btn" data-target="s11"><span class="num">11</span> Gestão de Mudança Ágil</button>
+    <button class="nav-btn" data-target="s12"><span class="num">12</span> O Ciclo Moderno</button>
+
+    <div class="nav-group-title">Fechando o Gap</div>
+    <button class="nav-btn" data-target="s13"><span class="num">13</span> BDD: o Fim do Gap Semântico</button>
+    <button class="nav-btn" data-target="s14"><span class="num">14</span> Novo Cinto de Ferramentas</button>
+    <button class="nav-btn" data-target="s15"><span class="num">15</span> Tradicional × Ágil (Resumo)</button>
+
+    <div class="nav-group-title">Fixação</div>
+    <button class="nav-btn" data-target="s16"><span class="num">16</span> Perguntas de Verificação</button>
+    <button class="nav-btn" data-target="s17"><span class="num">17</span> Exercícios</button>
+    <button class="nav-btn" data-target="s18"><span class="num">18</span> Resumo Final</button>
+  </nav>
+
+  <main>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+    <!-- 00 VISÃO GERAL -->
+    <section class="section active" id="s0">
+      <div class="kicker">Aula 2 · Prof. Mestre Júlio B. Herculani</div>
+      <h1>Do Requisito Engessado ao Requisito Vivo</h1>
+      <p class="lede">Esta aula compara dois jeitos de descobrir e documentar o que um software precisa fazer: o <strong>caminho clássico</strong>, criado por Ian Sommerville, e o <strong>caminho ágil/moderno</strong>, usado hoje na maioria das empresas de tecnologia.</p>
+
+      <div class="analogy">
+        Pense em Engenharia de Requisitos como <strong>a ponte entre o problema do mundo real e a solução digital</strong>. De um lado está a dor do cliente (o problema); do outro, o código (a solução). O requisito é o que garante que a ponte liga os dois lados certos — e não uma ponte bonita que termina no lugar errado.
+      </div>
+
+      <h3>Por que isso importa?</h3>
+      <p>Existe uma regra de ouro nesta disciplina: <strong>um requisito não descreve "como" programar, e sim "o que" deve ser feito e "por que"</strong>. Confundir essas duas coisas é a raiz da maioria dos projetos de software que dão errado.</p>
+
+      <div class="card blue">
+        <strong>O que você vai aprender nesta aula:</strong>
+        <ol>
+          <li>Como funcionava (e ainda funciona, em alguns contextos) o processo <strong>tradicional</strong> de requisitos.</li>
+          <li>Por que esse modelo quebra em um mundo que muda rápido.</li>
+          <li>Como o <strong>Ágil</strong> resolve, passo a passo, cada uma dessas quebras.</li>
+          <li>As ferramentas e técnicas modernas: User Stories, BDD, prototipagem, rastreabilidade automatizada.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 01 O QUE É UM REQUISITO -->
+    <section class="section" id="s1">
+      <div class="kicker">Fundamentos</div>
+      <h2>O que é um Requisito?</h2>
+      <p>Antes de comparar os dois modelos, precisamos de uma base sólida: <strong>o que exatamente é um requisito?</strong> A disciplina define isso sob três ângulos complementares.</p>
+
+      <table>
+        <tr><th>Ângulo</th><th>Definição</th></tr>
+        <tr><td><strong>A visão do usuário</strong></td><td>Uma <strong>capacidade</strong> necessária para resolver uma dor ou alcançar um objetivo.</td></tr>
+        <tr><td><strong>A visão do sistema</strong></td><td>Uma <strong>condição</strong> que o software deve satisfazer para cumprir um contrato ou padrão.</td></tr>
+        <tr><td><strong>O propósito (a ponte)</strong></td><td>É a ligação entre o problema real e a solução digital — não é sobre "como" programar, é sobre "o que" fazer e "por que".</td></tr>
+      </table>
+
+      <div class="attention"><strong>Regra de ouro:</strong> um requisito bem escrito nunca dita a solução técnica. Ele descreve a necessidade. "O sistema deve validar o CPF do usuário" é requisito; "usar regex X para validar o CPF" já é decisão de implementação.</div>
+
+      <h3>O clássico problema do balanço</h3>
+      <p>Esta é a charge mais famosa da Engenharia de Requisitos, e ela resume o problema de comunicação em um projeto: cada pessoa envolvida entende o pedido do cliente de um jeito diferente — o cliente explicou um balanço simples de pneu, o líder de projeto entendeu outra coisa, o analista projetou algo mais elaborado, o programador construiu algo torto e caro, o consultor de negócios "vendeu" uma poltrona, o cliente foi cobrado por uma montanha-russa cara demais... e o que ele realmente queria era só um balanço de pneu num pneu velho.</p>
+
+      <div class="card orange">
+        <strong>As quatro causas raiz desse problema:</strong>
+        <ul>
+          <li><strong>Falha de Comunicação</strong> — o que o cliente diz nem sempre é o que ele precisa.</li>
+          <li><strong>Silos Departamentais</strong> — cada área (vendas, análise, desenvolvimento) interpreta o projeto sob sua própria ótica.</li>
+          <li><strong>Falta de Validação</strong> — o usuário real só vê o produto no final, quando já é tarde demais.</li>
+          <li><strong>A Ilusão do Óbvio</strong> — o que é óbvio para o desenvolvedor não é óbvio para o cliente.</li>
+        </ul>
+      </div>
+
+      <h3>O gráfico de custo: por que corrigir cedo é mais barato</h3>
+      <p>Existe uma progressão de custo bem conhecida em engenharia de software, dividida em quatro fases:</p>
+      <div class="flow">
+        <div class="step" style="border-color:var(--green)">Fase de Requisitos<br><span class="badge agil">Custo 1x</span></div>
+        <span class="arrow">→</span>
+        <div class="step" style="border-color:var(--orange)">Fase de Implementação<br><span class="badge trad">Custo 10x</span></div>
+        <span class="arrow">→</span>
+        <div class="step" style="border-color:var(--red)">Fase de Produção<br><span class="badge trad">Custo 100x</span></div>
+      </div>
+      <p>Errar na fase de requisitos custa apenas papel e tempo de reunião. Mudar o código no meio do caminho exige refatoração (10x mais caro). Corrigir um bug com o sistema já no ar gera prejuízo real e estresse (100x mais caro). Por isso o <strong>objetivo moderno é "achatar a curva"</strong>: descobrir o erro o mais cedo possível.</p>
+
+      <div class="analogy">É como um erro de digitação: corrigir uma palavra errada enquanto você ainda está escrevendo o rascunho custa dois segundos. Descobrir o mesmo erro depois que o livro já foi impresso e distribuído em milhares de livrarias custa uma fortuna.</div>
+    </section>
+
+    <!-- 02 PROCESSO CLÁSSICO -->
+    <section class="section" id="s2">
+      <div class="kicker">O jeito clássico (Sommerville)</div>
+      <h2>Processo Clássico de Requisitos</h2>
+      <p>O modelo tradicional, descrito por Sommerville, segue um fluxo linear e sequencial — cada etapa só começa depois que a anterior termina. Ele parte de uma <strong>pressuposição arriscada: prever 100% do sistema antes de escrever qualquer código.</strong></p>
+
+      <div class="flow">
+        <div class="step">1. Elicitar<br><small>Coleta de Requisitos</small></div><span class="arrow">→</span>
+        <div class="step">2. Analisar<br><small>Processamento e Compreensão</small></div><span class="arrow">→</span>
+        <div class="step">3. Especificar<br><small>Documentação Detalhada</small></div><span class="arrow">→</span>
+        <div class="step">4. Validar<br><small>Aprovação Formal</small></div>
+      </div>
+      <p>Depois de validado, existe ainda uma quinta etapa contínua: a <strong>Gestão de Mudança</strong>, responsável por controlar qualquer alteração nesse documento já "fechado".</p>
+
+      <h3>1. Elicitação Tradicional</h3>
+      <ul>
+        <li>Foco em "Levantamento" — como se os requisitos já existissem prontos, bastando <strong>pegá-los</strong> do cliente.</li>
+        <li>Uso excessivo de entrevistas longas e questionários engessados (às vezes com 50 páginas), focados em "o que o sistema tem que ter?".</li>
+        <li>O analista atua como um <strong>"tirador de pedidos"</strong>, apenas anotando o que ouve.</li>
+        <li>O grande erro: clientes geralmente não sabem o que querem até verem o sistema funcionando.</li>
+      </ul>
+
+      <h3>2. Análise e 3. Especificação (BDUF)</h3>
+      <p><strong>BDUF</strong> significa <strong>Big Design Up Front</strong>: tentar desenhar toda a arquitetura e os fluxos do sistema antecipadamente, antes de escrever a primeira linha de código.</p>
+      <table>
+        <tr><th>Característica</th><th>O que significa na prática</th></tr>
+        <tr><td>Documentos massivos</td><td>Conformidade com normas pesadas, como a <strong>Norma IEEE 830</strong>.</td></tr>
+        <tr><td>Casos de uso textuais</td><td>Narrativas longas e difíceis de entender para pessoas não-técnicas.</td></tr>
+        <tr><td>Contrato de proteção</td><td>O documento vira um "escudo": se der errado, a culpa é de quem assinou.</td></tr>
+      </table>
+
+      <h3>4. Validação</h3>
+      <ul>
+        <li><strong>O "Sign-off":</strong> a assinatura física ou digital validando centenas de páginas que o cliente mal leu.</li>
+        <li><strong>Falsa Segurança:</strong> essa assinatura passa uma sensação de segurança para a equipe de TI que não corresponde à realidade.</li>
+        <li><strong>O Gap de Imaginação:</strong> o cliente aprova um documento de texto, mas a mente dele imaginou uma tela completamente diferente da que será construída.</li>
+      </ul>
+
+      <h3>5. Gestão de Mudança</h3>
+      <ul>
+        <li><strong>Conceito de mudança:</strong> mudanças são vistas como atrasos, aumento de custo e falhas de planejamento — não como algo natural.</li>
+        <li><strong>O Comitê (CCB — Comitê de Controle de Mudança):</strong> um grupo formal criado justamente para <strong>dificultar</strong> a alteração de escopo.</li>
+        <li><strong>Impacto burocrático:</strong> processo frustrante para o cliente, que vê seu negócio mudar enquanto o software fica obsoleto antes mesmo de nascer.</li>
+      </ul>
+
+      <div class="card">
+        <strong>Resumo visual do processo clássico:</strong>
+        <ol>
+          <li><strong>Elicitação</strong> — questionários de 50 páginas focados em "o que o sistema tem que ter?".</li>
+          <li><strong>Análise e Especificação (BDUF)</strong> — Big Design Up Front, especificações IEEE 830, o grande "contrato" inflexível.</li>
+          <li><strong>Validação</strong> — o "sign-off": o cliente assina o documento "com sangue"; o código só começa depois disso.</li>
+          <li><strong>Gestão de Mudança</strong> — Comitê de Controle (CCB): mudar um requisito era julgado e punido como uma "falha".</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 03 PROBLEMAS DO TRADICIONAL -->
+    <section class="section" id="s3">
+      <div class="kicker">Diagnóstico</div>
+      <h2>Onde o Modelo Tradicional Falha</h2>
+      <p class="lede">"O mundo real é dinâmico; documentos impressos não são." Essa frase resume, em uma linha, por que o modelo clássico entra em crise em projetos modernos.</p>
+
+      <table>
+        <tr><th>Problema</th><th>Explicação</th></tr>
+        <tr><td><strong>Velocidade</strong></td><td>Mercados e tecnologias mudam mais rápido do que a capacidade de escrever e revisar documentos gigantescos.</td></tr>
+        <tr><td><strong>Incerteza do Cliente</strong></td><td>Clientes raramente sabem o que realmente querem até verem a tela funcionando.</td></tr>
+        <tr><td><strong>Burocracia Inútil</strong></td><td>Ninguém — nem o desenvolvedor, nem o cliente — lê especificações textuais de dezenas de páginas.</td></tr>
+        <tr><td><strong>Cultura da Culpa</strong></td><td>A armadilha tradicional: "o usuário aprovou o documento na fase 1; se ele não gostou agora, a culpa é dele".</td></tr>
+      </table>
+
+      <div class="analogy">É como planejar uma viagem de carro imprimindo o trajeto exato, minuto a minuto, antes de sair de casa — sem considerar trânsito, obras ou um posto de gasolina fechado. O papel não se atualiza sozinho quando a realidade muda; só um GPS (algo vivo e recalculando em tempo real) resolve isso.</div>
+
+      <h3>Batalha dos mindsets: um resumo comparativo</h3>
+      <table>
+        <tr><th>Tradicional</th><th>Moderno (Ágil)</th></tr>
+        <tr><td class="col-trad">Planejamento inicial pesado → Previsibilidade → Foco no Sistema.</td><td class="col-agil">Adaptação contínua → Valor Rápido → Foco no Usuário.</td></tr>
+      </table>
+      <p><strong>Não existe "errado" absoluto.</strong> Há o modelo certo para o projeto certo — um foguete da NASA provavelmente ainda precisa de muita documentação formal; um aplicativo de startup, não.</p>
+    </section>
+
+    <!-- 04 MANIFESTO AGIL -->
+    <section class="section" id="s4">
+      <div class="kicker">A virada</div>
+      <h2>O Manifesto Ágil e os Requisitos</h2>
+      <p>O Manifesto Ágil não é sobre abandonar disciplina — é sobre trocar as prioridades. Para requisitos, isso se traduz em quatro valores:</p>
+
+      <table>
+        <tr><th>Valor Ágil</th><th>O que significa para requisitos</th></tr>
+        <tr><td><strong>Software Funcionando</strong></td><td>Software em funcionamento vale mais que documentação abrangente.</td></tr>
+        <tr><td><strong>Colaboração com o Cliente</strong></td><td>Colaboração com o cliente vale mais que negociação de contratos.</td></tr>
+        <tr><td><strong>Resposta a Mudanças</strong></td><td>Responder a mudanças vale mais que seguir rigidamente um plano.</td></tr>
+        <tr><td><strong>Nota sobre Documentação</strong></td><td>Atenção: isso <strong>não</strong> é o fim da documentação — é o fim da documentação <em>inútil</em>.</td></tr>
+      </table>
+
+      <div class="attention"><strong>Cuidado com um mal-entendido comum:</strong> "Ágil" não significa "sem documentação" ou "sem planejamento". Significa documentar e planejar só o necessário, no momento certo, e manter tudo vivo e atualizável.</div>
+    </section>
+
+    <!-- 05 FATIAMENTO -->
+    <section class="section" id="s5">
+      <div class="kicker">Técnica</div>
+      <h2>Fatiamento de Requisitos</h2>
+      <p>No Ágil, um requisito grande (chamado de <strong>Épico</strong>) é quebrado em partes menores e independentes. Isso permite que o valor seja entregue em <strong>semanas, não em anos</strong>.</p>
+
+      <div class="analogy">Pense em um queijo grande inteiro: ninguém consome ele de uma vez. Você corta em fatias — cada fatia já pode ser servida (tem valor sozinha), mesmo que o queijo inteiro ainda não tenha sido todo cortado. Um Épico é o queijo inteiro; cada User Story é uma fatia que já entrega algo útil por si só.</div>
+
+      <h3>Sommerville também se atualizou</h3>
+      <ul>
+        <li><strong>Engenharia de Requisitos Contínua:</strong> deixou de ser a "Fase 1" isolada e passou a ser um fluxo ininterrupto ao longo de todo o projeto.</li>
+        <li><strong>Ciclos Ágeis e Features:</strong> novas features exigem novos requisitos a cada ciclo (Sprint) — não tudo de uma vez no início.</li>
+        <li><strong>Ferramentas Virtuais:</strong> ferramentas pesadas de modelagem deram lugar a quadros virtuais colaborativos, com foco em colaboração online.</li>
+      </ul>
+    </section>
+
+    <!-- 06 RNF -->
+    <section class="section" id="s6">
+      <div class="kicker">Ponto de atenção</div>
+      <h2>Onde fica o RNF (Não Funcional) no Ágil?</h2>
+      <p>Um <strong>Requisito Não Funcional (RNF)</strong> descreve qualidades do sistema — performance, segurança, usabilidade — em vez de uma funcionalidade específica. A pergunta que fica é: <strong>como garantir performance e segurança sem voltar a escrever documentos de 100 páginas de arquitetura?</strong> Existem duas soluções complementares:</p>
+
+      <table>
+        <tr><th>Opção 1 — Definition of Done (DoD)</th><th>Opção 2 — Critério de Aceite específico (BDD)</th></tr>
+        <tr>
+          <td class="col-trad">
+            <strong>Regra global para todas as stories.</strong> O RNF torna-se uma regra fixa do sistema, aplicada sempre.
+            <br><br><strong>Exemplo:</strong> nenhuma User Story é considerada "Pronta" se as consultas ao banco levarem mais de 2 segundos.
+          </td>
+          <td class="col-agil">
+            <strong>Embutido na história específica.</strong> O RNF é um critério de aceitação dentro daquela User Story, escrito em formato Gherkin (Dado/Quando/Então).
+            <br><br><strong>Exemplo:</strong> <em>DADO</em> senha digitada, <em>ENTÃO</em> ela deve ser criptografada com Hash SHA-256 no banco.
+          </td>
+        </tr>
+      </table>
+
+      <div class="analogy">A opção 1 (DoD) é como uma regra de segurança da casa que vale para todo mundo, sempre: "todo mundo tira o sapato antes de entrar" (regra global). A opção 2 (BDD) é como uma instrução específica de uma receita: "se for usar o forno, pré-aqueça a 180°C" (regra dentro daquela tarefa específica).</div>
+    </section>
+
+    <!-- 07 RASTREABILIDADE -->
+    <section class="section" id="s7">
+      <div class="kicker">Ferramental</div>
+      <h2>Rastreabilidade Moderna</h2>
+      <p>Rastreabilidade é a capacidade de ligar um requisito à história, ao código e ao teste que o implementaram — de saber, a qualquer momento, <strong>de onde veio</strong> cada linha de código.</p>
+
+      <table>
+        <tr><th>Do Passado: Matrizes Manuais</th><th>Do Presente: Sistemas Integrados</th></tr>
+        <tr>
+          <td class="col-trad">Matrizes de Excel gigantescas, processo manual propenso a erros, falta de visão sistêmica.</td>
+          <td class="col-agil">Rastreabilidade sistêmica e automatizada, integração de ferramentas-chave, dados fluidos e em tempo real. Ferramentas: <strong>Jira + GitHub/GitLab</strong>.</td>
+        </tr>
+      </table>
+
+      <h3>O fluxo de rastreabilidade passo a passo</h3>
+      <div class="flow">
+        <div class="step">1. Épico engloba<br>User Story (Jira)</div><span class="arrow">→</span>
+        <div class="step">2. História contém<br>Chave (ex: PROJ-102)</div><span class="arrow">→</span>
+        <div class="step">3. Branch no Git com<br>nome da História<br><code>feat/PROJ-102</code></div><span class="arrow">→</span>
+        <div class="step">4. Código e Pull Request<br>eternamente atrelados</div>
+      </div>
+      <p><strong>Vantagem:</strong> rastreabilidade eterna. Se surgir um bug, a localização exata e imediata do requisito relacionado já está registrada — basta seguir o fio da meada de volta.</p>
+    </section>
+
+    <!-- 08 DISCOVERY -->
+    <section class="section" id="s8">
+      <div class="kicker">Mudança de mentalidade</div>
+      <h2>Da Elicitação ao Discovery</h2>
+      <table>
+        <tr><th>Elicitação (Tradicional)</th><th>Discovery — Descoberta (Ágil)</th></tr>
+        <tr>
+          <td class="col-trad">Foco no <strong>Sistema</strong>.<br>Exemplo: "O sistema deve ter um botão de exportar PDF."</td>
+          <td class="col-agil">Foco na <strong>Dor</strong>.<br>Exemplo: "Por que o usuário precisa exportar esse PDF? O que ele faz com o papel depois?"</td>
+        </tr>
+      </table>
+      <p>O Discovery usa <strong>Design Thinking</strong>: empatia, ideação e investigação profunda do problema antes mesmo de pensar em qualquer tela.</p>
+
+      <div class="analogy">É a diferença entre um garçom que só anota "o cliente pediu água" (elicitação) e um garçom que percebe que o cliente está com sede porque acabou de correr, e já sugere também um isotônico (discovery). O segundo entende a <strong>causa</strong>, não só o pedido.</div>
+    </section>
+
+    <!-- 09 USER STORIES -->
+    <section class="section" id="s9">
+      <div class="kicker">Do documento à conversa</div>
+      <h2>De Especificação para User Stories</h2>
+      <p>No modelo clássico, o requisito virava um documento estático de dezenas de páginas. No Ágil, ele vira uma <strong>User Story</strong>, estruturada nos chamados <strong>3 Cs</strong>:</p>
+
+      <table>
+        <tr><th>C</th><th>Significado</th><th>Descrição</th></tr>
+        <tr><td><strong>Card</strong> (Cartão)</td><td>O resumo</td><td>A história deve caber num post-it. É apenas um <strong>lembrete</strong> de que uma conversa precisa acontecer.</td></tr>
+        <tr><td><strong>Conversation</strong> (Conversa)</td><td>O detalhamento</td><td>Os detalhes não são escritos de antemão — eles são <strong>conversados</strong> entre PO (Product Owner), Devs e Cliente.</td></tr>
+        <tr><td><strong>Confirmation</strong> (Confirmação)</td><td>A validação</td><td>Os critérios de aceite que provam que a história foi concluída corretamente.</td></tr>
+      </table>
+
+      <div class="analogy">O Card é como o título de um post-it colado na geladeira ("comprar leite") — ele não te diz qual marca, qual quantidade ou por quê; isso vem da conversa que você tem na hora de decidir. A Confirmation é a lista de conferência na volta do mercado: "comprei o leite certo?".</div>
+    </section>
+
+    <!-- 10 PROTOTIPAGEM -->
+    <section class="section" id="s10">
+      <div class="kicker">Do documento ao visual</div>
+      <h2>De Validação para Prototipagem</h2>
+      <p>Em vez de validar um documento de texto (que gera o "Gap de Imaginação" visto anteriormente), o Ágil valida <strong>protótipos visuais e interativos</strong>.</p>
+
+      <table>
+        <tr><th>Prototipagem de Baixa Fidelidade</th><th>Prototipagem de Alta Fidelidade</th></tr>
+        <tr>
+          <td class="col-trad">Papel e caneta, wireframes (ex: Balsamiq). Valida o fluxo rápido, sem se preocupar com estética.</td>
+          <td class="col-agil">Protótipo clicável no Figma. Valida a interface e as regras de negócio antes mesmo de codificar.</td>
+        </tr>
+      </table>
+
+      <h3>Benefícios da validação visual</h3>
+      <p>A validação visual elimina cerca de <strong>90% das ambiguidades</strong> que um texto puro carregaria — porque duas pessoas raramente imaginam a mesma tela ao ler a mesma frase.</p>
+      <blockquote style="font-family:'Fraunces',serif; font-style:italic; font-size:1.1rem; border-left:3px solid var(--blue); padding-left:16px; margin:18px 0; color:var(--ink-2);">
+        "Um protótipo vale mais que mil reuniões de alinhamento."
+      </blockquote>
+    </section>
+
+    <!-- 11 GESTAO MUDANCA AGIL -->
+    <section class="section" id="s11">
+      <div class="kicker">Aceitando a incerteza</div>
+      <h2>Gestão de Mudança Ágil</h2>
+      <table>
+        <tr><th>Aceitação de Mudanças</th><th>Backlog do Produto (Lista Viva)</th><th>Hierarquia de Detalhe</th></tr>
+        <tr>
+          <td class="col-agil">Requisitos podem mudar, mesmo no fim do desenvolvimento. <strong>Mudança é vantagem competitiva!</strong></td>
+          <td class="col-agil">Uma lista viva, ordenada e eternamente incompleta. Prioridade e escopo evoluem constantemente.</td>
+          <td class="col-agil">Itens do topo do Backlog são detalhados; itens do fundo são apenas ideias vagas ainda.</td>
+        </tr>
+      </table>
+      <p>Repare o contraste direto com o CCB tradicional: lá, mudar era "julgado e punido"; aqui, mudar é esperado e até celebrado, porque significa que o time está aprendendo com feedback real.</p>
+    </section>
+
+    <!-- 12 CICLO MODERNO -->
+    <section class="section" id="s12">
+      <div class="kicker">O quadro completo</div>
+      <h2>O Ciclo Moderno</h2>
+      <p>Juntando todas as peças anteriores, o processo ágil de requisitos forma um ciclo contínuo de 4 etapas, com feedback constante voltando para etapas anteriores (não é uma linha reta como no modelo clássico):</p>
+
+      <div class="flow">
+        <div class="step" style="border-color:var(--cyan)">1. Descoberta<br><small>Pesquisa de Usuário, Personas</small></div><span class="arrow">→</span>
+        <div class="step" style="border-color:var(--green)">2. Histórias de Usuário<br><small>Requisitos, Backlog</small></div><span class="arrow">→</span>
+        <div class="step" style="border-color:var(--orange)">3. Prototipagem<br><small>Mockups, Testes de Usabilidade</small></div><span class="arrow">→</span>
+        <div class="step" style="border-color:var(--red)">4. Gestão de Mudança Ágil<br><small>Sprints, Ciclos de Feedback, Adaptação</small></div>
+      </div>
+      <p>Setas pontilhadas de <strong>feedback</strong> e <strong>iteração</strong> conectam as etapas de volta às anteriores: o que se aprende na Prototipagem pode gerar novas Histórias; o que se aprende na Gestão de Mudança pode voltar direto para a Descoberta. É um ciclo, não uma linha de produção.</p>
+    </section>
+
+    <!-- 13 BDD -->
+    <section class="section" id="s13">
+      <div class="kicker">A solução técnica</div>
+      <h2>BDD: Fechando o Gap Semântico</h2>
+      <h3>1. O Problema</h3>
+      <p>O <strong>Gap Semântico</strong> é a distância de vocabulário entre quem fala de negócio e quem fala de código: o cliente fala de <strong>taxas e vendas</strong>; o programador fala de <strong>banco de dados e APIs</strong>. As duas pessoas usam palavras diferentes para o mesmo problema — e é aí que nascem os mal-entendidos.</p>
+
+      <h3>2. A Solução: BDD</h3>
+      <p><strong>BDD</strong> significa <strong>Behavior-Driven Development</strong> (Desenvolvimento Guiado por Comportamento). Ele usa uma linguagem estruturada e semi-natural — chamada <strong>Gherkin</strong> — que tanto o cliente quanto o programador conseguem ler e entender, no formato <strong>Dado / Quando / Então</strong> (Given / When / Then):</p>
+
+      <pre><span class="cm"># Exemplo de especificação em Gherkin</span>
+<span class="kw">Funcionalidade:</span> Login de usuário
+
+<span class="kw">Dado</span> que o usuário está na tela de login
+<span class="kw">Quando</span> ele digita e-mail e senha válidos
+<span class="kw">Então</span> o sistema deve conceder acesso ao painel</pre>
+
+      <div class="analogy">O Gherkin é como uma receita de bolo escrita de um jeito que tanto o chef quanto um ajudante iniciante conseguem seguir: "se a massa estiver homogênea, então está pronta para assar". Não é código puro, mas também não é uma redação livre e ambígua — é uma estrutura fixa que qualquer pessoa consegue ler.</div>
+
+      <div class="attention"><strong>Por que isso importa:</strong> como o Gherkin é escrito em uma estrutura fixa, ele pode virar automaticamente um <strong>teste automatizado executável</strong> (com ferramentas como o Cucumber). O requisito deixa de ser só um texto — ele vira também a prova de que o sistema funciona.</div>
+    </section>
+
+    <!-- 14 FERRAMENTAS -->
+    <section class="section" id="s14">
+      <div class="kicker">Na prática do dia a dia</div>
+      <h2>Novo Cinto de Utilidades</h2>
+      <p>Assim como um super-herói troca de equipamento, o Engenheiro de Requisitos moderno trocou suas ferramentas clássicas por versões colaborativas e vivas:</p>
+
+      <table>
+        <tr><th>De (Tradicional)</th><th>Para (Ágil)</th></tr>
+        <tr><td class="col-trad">Microsoft Word (Norma IEEE 830)</td><td class="col-agil">Jira / Azure DevOps</td></tr>
+        <tr><td class="col-trad">Enterprise Architect (UML pesada)</td><td class="col-agil">Miro / FigJam (Jornadas e Mapas)</td></tr>
+        <tr><td class="col-trad">Telas descritas apenas em texto</td><td class="col-agil">Figma (Protótipos clicáveis)</td></tr>
+        <tr><td class="col-trad">Requisitos escritos manualmente</td><td class="col-agil">Cucumber / Gherkin (Especificação Executável)</td></tr>
+      </table>
+    </section>
+
+    <!-- 15 RESUMO COMPARATIVO -->
+    <section class="section" id="s15">
+      <div class="kicker">O panorama completo</div>
+      <h2>Tradicional × Ágil — Resumo Final</h2>
+      <p>Reunindo tudo o que vimos ao longo da aula em uma única visão comparativa:</p>
+
+      <table>
+        <tr><th>Dimensão</th><th><span class="badge trad">Tradicional</span></th><th><span class="badge agil">Ágil</span></th></tr>
+        <tr><td><strong>Foco</strong></td><td class="col-trad">No sistema e na previsibilidade.</td><td class="col-agil">No usuário e na entrega de valor rápido.</td></tr>
+        <tr><td><strong>Abordagem ao Erro</strong></td><td class="col-trad">Evitar o erro a todo custo com planejamento pesado antecipado.</td><td class="col-agil">Descobrir o erro cedo, validar rápido e corrigir em ciclos curtos.</td></tr>
+        <tr><td><strong>Escopo</strong></td><td class="col-trad">Fixo e "congelado" após o sign-off.</td><td class="col-agil">Vivo, priorizado continuamente no Backlog.</td></tr>
+        <tr><td><strong>Documentação</strong></td><td class="col-trad">Extensa, formal, serve como contrato/escudo.</td><td class="col-agil">Mínima e útil — Card, Conversa, Confirmação, Gherkin.</td></tr>
+        <tr><td><strong>Validação</strong></td><td class="col-trad">Assinatura em documento de texto.</td><td class="col-agil">Protótipos visuais e clicáveis.</td></tr>
+        <tr><td><strong>Mudança</strong></td><td class="col-trad">Julgada e controlada por um comitê (CCB).</td><td class="col-agil">Aceita como vantagem competitiva.</td></tr>
+      </table>
+
+      <div class="card green">
+        <strong>Conclusão da disciplina:</strong> não existe um vencedor absoluto entre os dois modelos. O papel do Engenheiro de Requisitos é escolher — ou combinar — a abordagem certa para o contexto, o cliente e o nível de incerteza de cada projeto.
+      </div>
+    </section>
+
+    <!-- 16 PERGUNTAS -->
+    <section class="section" id="s16">
+      <div class="kicker">Fixação</div>
+      <h2>Perguntas de Verificação</h2>
+      <p>Clique em uma alternativa para ver se acertou.</p>
+
+      <div class="quiz-q">
+        <p class="question">1. Qual é a "regra de ouro" ao escrever um requisito?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt" data-correct="false">Ele deve descrever exatamente qual tecnologia e algoritmo usar.</button>
+          <button class="quiz-opt" data-correct="true">Ele deve descrever "o que" deve ser feito e "por que" — nunca "como" programar.</button>
+          <button class="quiz-opt" data-correct="false">Ele deve ter no mínimo 50 páginas de detalhamento.</button>
+        </div>
+        <div class="quiz-fb"></div>
+      </div>
+
+      <div class="quiz-q">
+        <p class="question">2. O que significa BDUF (Big Design Up Front)?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt" data-correct="false">Um tipo de teste automatizado em Gherkin.</button>
+          <button class="quiz-opt" data-correct="true">Tentar desenhar toda a arquitetura e os fluxos do sistema antecipadamente, antes de codificar.</button>
+          <button class="quiz-opt" data-correct="false">Uma ferramenta de prototipagem de alta fidelidade.</button>
+        </div>
+        <div class="quiz-fb"></div>
+      </div>
+
+      <div class="quiz-q">
+        <p class="question">3. Nos "3 Cs" de uma User Story, o que representa a "Conversation"?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt" data-correct="false">O critério de aceite que prova que a história foi concluída.</button>
+          <button class="quiz-opt" data-correct="false">O resumo curto que cabe num post-it.</button>
+          <button class="quiz-opt" data-correct="true">Os detalhes da história, que não são escritos de antemão, mas conversados entre PO, Devs e Cliente.</button>
+        </div>
+        <div class="quiz-fb"></div>
+      </div>
+
+      <div class="quiz-q">
+        <p class="question">4. Por que o BDD (Behavior-Driven Development) ajuda a fechar o "Gap Semântico"?</p>
+        <div class="quiz-opts">
+          <button class="quiz-opt" data-correct="false">Porque elimina totalmente a necessidade de comunicação com o cliente.</button>
+          <button class="quiz-opt" data-correct="true">Porque usa uma linguagem estruturada (Gherkin: Dado/Quando/Então) que tanto o cliente quanto o programador entendem.</button>
+          <button class="quiz-opt" data-correct="false">Porque substitui totalmente os testes automatizados.</button>
+        </div>
+        <div class="quiz-fb"></div>
+      </div>
+    </section>
+
+    <!-- 17 EXERCICIOS -->
+    <section class="section" id="s17">
+      <div class="kicker">Prática</div>
+      <h2>Exercícios</h2>
+
+      <div class="exercise">
+        <p><strong>Exercício 1.</strong> Você está desenvolvendo o software das Urnas Eletrônicas do Brasil (o mesmo "Quiz Mental" proposto em aula). Esse sistema tem exigências legais rígidas, precisa de altíssima confiabilidade e não pode mudar de comportamento no meio de uma eleição. Você usaria o modelo de requisitos <strong>Tradicional</strong> (assinado, engessado, documentado) ou <strong>Ágil</strong> (volátil, rápido, aberto a mudanças)? Justifique.</p>
+        <button class="gabarito-btn" onclick="toggleGabarito(this)">Ver gabarito</button>
+        <div class="gabarito">
+          <strong>Resposta esperada:</strong> Para um sistema como a urna eletrônica, o modelo <strong>Tradicional</strong> é o mais indicado — pelo menos para os requisitos críticos de segurança e integridade do voto. O motivo é o contexto: há exigências legais fixas, auditorias obrigatórias, e o "custo de mudança" durante a operação (Fase de Produção) é altíssimo — não há espaço para "aprender com o erro depois", como em um app comum. Isso não significa abandonar completamente práticas ágeis (protótipos, testes automatizados em BDD ainda ajudam), mas o processo de validação e o sign-off formal fazem sentido aqui, porque previsibilidade e rastreabilidade legal importam mais do que velocidade de entrega. Esse é exatamente o ponto da aula: <strong>não existe modelo "certo" universal — existe o modelo certo para o projeto certo.</strong>
+        </div>
+      </div>
+
+      <div class="exercise">
+        <p><strong>Exercício 2.</strong> Reescreva a User Story abaixo separando corretamente os "3 Cs" (Card, Conversation, Confirmation), e depois escreva um critério de aceite em formato Gherkin (Dado/Quando/Então) para ela:</p>
+        <p style="font-style:italic;">"O sistema precisa permitir que o cliente exporte o extrato de compras em PDF."</p>
+        <button class="gabarito-btn" onclick="toggleGabarito(this)">Ver gabarito</button>
+        <div class="gabarito">
+          <strong>Resposta esperada (exemplo):</strong>
+          <ul>
+            <li><strong>Card:</strong> "Como cliente, quero exportar meu extrato de compras em PDF."</li>
+            <li><strong>Conversation:</strong> aqui entra a parte que não se escreve de antemão — o PO, o time e o cliente conversam sobre detalhes como: em qual tela fica o botão de exportar? O PDF inclui todas as compras ou só de um período? Existe limite de tamanho de arquivo? Essa é a etapa de "Discovery": descobrir a dor por trás do pedido (por exemplo, o cliente precisa do PDF para prestar contas à contabilidade).</li>
+            <li><strong>Confirmation</strong> (critério de aceite em Gherkin):</li>
+          </ul>
+          <pre><span class="kw">Dado</span> que o cliente está na tela de extrato
+<span class="kw">Quando</span> ele clica em "Exportar PDF"
+<span class="kw">Então</span> o sistema deve gerar um arquivo PDF com todas as compras do período selecionado</pre>
+          <p>O raciocínio central aqui é: a User Story sozinha (o Card) é apenas um lembrete curto; o valor real está na conversa que detalha o "porquê", e a confirmação garante que todos concordam sobre quando a tarefa está de fato pronta — evitando o "Gap de Imaginação" visto no modelo tradicional.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 RESUMO -->
+    <section class="section" id="s18">
+      <div class="kicker">Fechamento</div>
+      <h2>Resumo Final da Aula</h2>
+      <ul class="summary-list">
+        <li>Um <strong>requisito</strong> é a ponte entre o problema real do usuário e a solução digital — nunca deve prescrever "como" programar, só "o que" e "por que".</li>
+        <li>O <strong>modelo Tradicional</strong> (Sommerville) segue 5 etapas lineares: Elicitação → Análise/Especificação (BDUF) → Validação → Gestão de Mudança, com base na pressuposição de prever 100% do sistema antes do código.</li>
+        <li>Esse modelo falha porque o mundo real muda mais rápido do que documentos impressos conseguem acompanhar, gerando burocracia inútil e uma cultura de culpa.</li>
+        <li>O <strong>Manifesto Ágil</strong> reordena prioridades: software funcionando, colaboração com o cliente e resposta a mudanças — sem eliminar documentação, apenas cortando a documentação inútil.</li>
+        <li>Requisitos grandes (<strong>Épicos</strong>) são fatiados em <strong>User Stories</strong> menores, entregando valor em semanas.</li>
+        <li>Requisitos Não Funcionais no Ágil vivem como <strong>Definition of Done</strong> (regra global) ou como critério de aceite específico em <strong>BDD</strong>.</li>
+        <li>A <strong>Rastreabilidade Moderna</strong> conecta automaticamente Épico → História → Branch → Pull Request, usando ferramentas como Jira e GitHub/GitLab.</li>
+        <li>A elicitação tradicional (foco no sistema) deu lugar ao <strong>Discovery</strong> (foco na dor do usuário), usando Design Thinking.</li>
+        <li>Uma User Story é estruturada nos <strong>3 Cs</strong>: Card (resumo), Conversation (detalhamento) e Confirmation (critério de aceite).</li>
+        <li>A validação por assinatura em documento deu lugar à <strong>prototipagem</strong> (baixa e alta fidelidade), eliminando cerca de 90% das ambiguidades.</li>
+        <li>A mudança de requisitos deixou de ser punida por um comitê e passou a ser aceita como <strong>vantagem competitiva</strong>, gerenciada por um Backlog vivo.</li>
+        <li>O <strong>Ciclo Moderno</strong> conecta Descoberta → Histórias → Prototipagem → Gestão de Mudança Ágil, com feedback constante entre as etapas.</li>
+        <li>O <strong>BDD</strong> (Gherkin: Dado/Quando/Então) fecha o Gap Semântico entre a linguagem de negócio e a linguagem de código, virando especificação executável.</li>
+        <li>O cinto de ferramentas mudou: de Word/IEEE 830 para Jira; de UML pesada para Miro/FigJam; de texto para Figma; de requisitos manuais para Cucumber/Gherkin.</li>
+      </ul>
+
+      <div class="final-box">
+        <h3>A grande virada em uma frase</h3>
+        <p style="margin-bottom:0; color:#dbe6ff;">A Engenharia de Requisitos deixou de tentar <strong>prever o futuro em um documento fixo</strong> e passou a <strong>construir um processo vivo</strong>, capaz de aprender e se adaptar a cada ciclo — sem nunca perder de vista a pergunta central: qual é o problema real que estamos resolvendo, e para quem?</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.section');
+  const progressFill = document.getElementById('progressFill');
+  const total = buttons.length;
+
+  buttons.forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+      progressFill.style.width = (((idx+1)/total)*100) + '%';
+      document.querySelector('main').scrollTo({top:0, behavior:'smooth'});
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+
+  // Quiz logic
+  document.querySelectorAll('.quiz-q').forEach(q => {
+    const opts = q.querySelectorAll('.quiz-opt');
+    const fb = q.querySelector('.quiz-fb');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (opt.disabled) return;
+        opts.forEach(o => o.disabled = true);
+        const isCorrect = opt.dataset.correct === 'true';
+        opt.classList.add(isCorrect ? 'correct' : 'wrong');
+        if(!isCorrect){
+          opts.forEach(o => { if(o.dataset.correct === 'true') o.classList.add('correct'); });
+        }
+        fb.textContent = isCorrect ? '✅ Correto! Muito bem.' : '❌ Não é essa. Observe a alternativa correta destacada acima.';
+        fb.classList.add('show', isCorrect ? 'ok' : 'no');
+      });
+    });
+  });
+
+  function toggleGabarito(btn){
+    const g = btn.nextElementSibling;
+    g.classList.toggle('show');
+    btn.textContent = g.classList.contains('show') ? 'Ocultar gabarito' : 'Ver gabarito';
+  }
+</script>
+</body>
+</html>
