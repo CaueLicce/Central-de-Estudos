@@ -156,109 +156,6 @@
 
     .card:hover .card-arrow { gap: 0.7rem; }
 
-    .card-terminal {
-      background: #050a05;
-      border-color: #1a2e1a;
-    }
-
-    .card-terminal:hover {
-      box-shadow: 0 0 30px rgba(0,255,65,0.12), 0 8px 30px rgba(0,0,0,0.5);
-      border-color: #2a4a2a;
-    }
-
-    .card-terminal .card-preview { background: #050a05; }
-
-    .card-terminal canvas {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      opacity: 0.18;
-    }
-
-    .card-terminal .preview-overlay {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column;
-      justify-content: flex-end;
-      padding: 1rem 1.2rem;
-      background: linear-gradient(to top, rgba(5,10,5,0.95) 0%, transparent 60%);
-    }
-
-    .card-terminal .preview-label {
-      font-family: 'Courier New', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      color: #005514;
-      margin-bottom: 0.4rem;
-    }
-
-    .card-terminal .preview-cards {
-      display: flex;
-      gap: 0.4rem;
-    }
-
-    .card-terminal .mini-card {
-      flex: 1;
-      height: 26px;
-      background: #0a100a;
-      border: 1px solid #1a2e1a;
-      border-left: 2px solid #00ff41;
-      border-radius: 2px;
-      opacity: 0.6;
-    }
-
-    .card-terminal .card-body {
-      background: #050a05;
-      border-top: 1px solid #1a2e1a;
-    }
-
-    .card-terminal .card-tag   { color: #005514; }
-    .card-terminal .card-title { color: #00ff41; font-family: 'Courier New', monospace; font-size: 0.95rem; }
-    .card-terminal .card-desc  { color: #5a7a5a; }
-    .card-terminal .card-arrow { color: #00aa2a; }
-
-    .cursor-blink::after {
-      content: '█';
-      animation: blink-t 0.8s step-start infinite;
-      color: #00ff41;
-      font-size: 0.8rem;
-    }
-
-    @keyframes blink-t {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0; }
-    }
-
-    .card-terminal::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 3px,
-        rgba(0,0,0,0.10) 3px, rgba(0,0,0,0.10) 4px
-      );
-      pointer-events: none;
-      z-index: 10;
-      border-radius: 14px;
-    }
-
-    .glitch-layer {
-      position: absolute; inset: 0;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 5;
-      background: rgba(0,255,65,0.04);
-    }
-
-    .card-terminal:hover .glitch-layer {
-      animation: card-glitch 2.5s steps(1) infinite;
-    }
-
-    @keyframes card-glitch {
-      0%,78%  { opacity: 0; transform: translateX(0); clip-path: none; }
-      80%     { opacity: 1; transform: translateX(-3px); clip-path: inset(15% 0 60% 0); filter: hue-rotate(80deg); }
-      83%     { transform: translateX(2px); clip-path: inset(55% 0 8% 0); }
-      86%     { opacity: 0; transform: translateX(0); clip-path: none; filter: none; }
-      100%    { opacity: 0; }
-    }
-
     .card-apoo {
       background: #0d0f17;
       border-color: #2a2f45;
@@ -790,6 +687,36 @@
     .card-eds .card-desc    { color: #5C5E8A; }
     .card-eds .card-arrow   { color: #6C63FF; }
 
+    /* ── CARD ENGENHARIA DE REQUISITOS ── */
+    .card-req {
+      background: #f4f1ea;
+      border-color: #c9c2af;
+    }
+
+    .card-req:hover {
+      box-shadow: 0 0 30px rgba(47,111,237,.14), 0 8px 30px rgba(0,0,0,.35);
+      border-color: #2f6fed;
+    }
+
+    .card-req .card-preview {
+      background:
+        linear-gradient(rgba(47,111,237,0.08) 1px, transparent 1px) 0 0/14px 14px,
+        linear-gradient(90deg, rgba(47,111,237,0.08) 1px, transparent 1px) 0 0/14px 14px,
+        #f4f1ea;
+      overflow: hidden;
+    }
+
+    .card-req .preview-svg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+    }
+
+    .card-req .card-body    { background: #f4f1ea; border-top: 1px solid #c9c2af; }
+    .card-req .card-tag     { color: #2f6fed; }
+    .card-req .card-title   { color: #0b1f3a; font-family: 'Georgia', serif; }
+    .card-req .card-desc    { color: #5c5a4e; }
+    .card-req .card-arrow   { color: #2f6fed; }
+
     /* ── CARD EM BREVE ── */
     .card-soon {
       background: var(--surface);
@@ -872,34 +799,7 @@
 </header>
 
 <main>
-  <div class="section-label">// atividades · Programação Front End</div>
-
-  <div class="cards-grid">
-
-    <a class="card card-terminal" href="portfolio/">
-      <div class="glitch-layer"></div>
-      <div class="card-preview">
-        <canvas id="matrix-card"></canvas>
-        <div class="preview-overlay">
-          <div class="preview-label">// PORTFOLIO.exe — carregado</div>
-          <div class="preview-cards">
-            <div class="mini-card"></div>
-            <div class="mini-card"></div>
-            <div class="mini-card"></div>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="card-tag">// Programação Front End</div>
-        <div class="card-title cursor-blink">Meu Portfólio de Tarefas</div>
-        <div class="card-desc">Tarefas práticas de HTML, CSS e JavaScript — Programação Front End 2026.</div>
-        <div class="card-arrow">→ acessar portfólio</div>
-      </div>
-    </a>
-
-  </div>
-
-  <div class="section-label" style="margin-top: 3.5rem;">// guias de estudo · APOO &amp; Front End</div>
+  <div class="section-label">// guias de estudo · APOO &amp; Front End</div>
 
   <div class="cards-grid">
 
@@ -1081,6 +981,64 @@
       </div>
     </a>
 
+    <a class="card card-req" href="engenharia-requisitos/">
+      <div class="card-preview">
+        <svg class="preview-svg" viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg">
+          <text x="200" y="24" text-anchor="middle" font-family="IBM Plex Mono, monospace"
+                font-size="8" fill="#2f6fed" letter-spacing="0.15em">REQUISITOS</text>
+
+          <!-- Documento com checklist -->
+          <rect x="34" y="36" width="118" height="100" rx="6" fill="#ffffff" stroke="#c9c2af" stroke-width="1.3"/>
+          <line x1="48" y1="54" x2="138" y2="54" stroke="#0b1f3a" stroke-width="2"/>
+          <rect x="48" y="68" width="10" height="10" rx="2" fill="none" stroke="#2f9e6e" stroke-width="1.4"/>
+          <path d="M50 73 L53 76 L58 70" stroke="#2f9e6e" stroke-width="1.4" fill="none"/>
+          <line x1="64" y1="73" x2="130" y2="73" stroke="#5c5a4e" stroke-width="1.3"/>
+
+          <rect x="48" y="86" width="10" height="10" rx="2" fill="none" stroke="#2f9e6e" stroke-width="1.4"/>
+          <path d="M50 91 L53 94 L58 88" stroke="#2f9e6e" stroke-width="1.4" fill="none"/>
+          <line x1="64" y1="91" x2="122" y2="91" stroke="#5c5a4e" stroke-width="1.3"/>
+
+          <rect x="48" y="104" width="10" height="10" rx="2" fill="none" stroke="#e8792c" stroke-width="1.4"/>
+          <line x1="64" y1="109" x2="132" y2="109" stroke="#5c5a4e" stroke-width="1.3"/>
+
+          <rect x="48" y="122" width="10" height="10" rx="2" fill="none" stroke="#c9c2af" stroke-width="1.4"/>
+          <line x1="64" y1="127" x2="118" y2="127" stroke="#5c5a4e" stroke-width="1.3"/>
+
+          <!-- Seta para diagrama -->
+          <line x1="158" y1="86" x2="188" y2="86" stroke="#5c5a4e" stroke-width="1.2"/>
+          <polygon points="188,86 181,82 181,90" fill="#5c5a4e"/>
+
+          <!-- Ator + caso de uso -->
+          <circle cx="222" cy="60" r="9" fill="none" stroke="#0b1f3a" stroke-width="1.4"/>
+          <line x1="222" y1="69" x2="222" y2="92" stroke="#0b1f3a" stroke-width="1.4"/>
+          <line x1="208" y1="78" x2="236" y2="78" stroke="#0b1f3a" stroke-width="1.4"/>
+          <line x1="222" y1="92" x2="210" y2="108" stroke="#0b1f3a" stroke-width="1.4"/>
+          <line x1="222" y1="92" x2="234" y2="108" stroke="#0b1f3a" stroke-width="1.4"/>
+          <text x="222" y="122" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" fill="#5c5a4e">usuário</text>
+
+          <line x1="238" y1="70" x2="270" y2="60" stroke="#c9c2af" stroke-width="1.2"/>
+
+          <ellipse cx="320" cy="60" rx="58" ry="22" fill="#ffffff" stroke="#2f6fed" stroke-width="1.4"/>
+          <text x="320" y="58" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="600" fill="#0b1f3a">Cadastrar</text>
+          <text x="320" y="69" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="600" fill="#0b1f3a">Pedido</text>
+
+          <ellipse cx="320" cy="112" rx="58" ry="22" fill="#ffffff" stroke="#28b5c9" stroke-width="1.4"/>
+          <text x="320" y="110" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="600" fill="#0b1f3a">Validar</text>
+          <text x="320" y="121" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="9" font-weight="600" fill="#0b1f3a">Estoque</text>
+
+          <line x1="320" y1="82" x2="320" y2="90" stroke="#5c5a4e" stroke-width="1" stroke-dasharray="3,2"/>
+          <polygon points="320,90 317,84 323,84" fill="none" stroke="#5c5a4e" stroke-width="1"/>
+          <text x="330" y="88" font-family="IBM Plex Mono, monospace" font-size="6" fill="#5c5a4e">«include»</text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <div class="card-tag">Engenharia de Software · Aula 2</div>
+        <div class="card-title">Engenharia de Requisitos</div>
+        <div class="card-desc">Requisitos funcionais e não funcionais, elicitação, casos de uso e boas práticas de especificação.</div>
+        <div class="card-arrow">→ acessar guia</div>
+      </div>
+    </a>
+
     <div class="card card-soon">
       <div class="card-preview">＋</div>
       <div class="card-body">
@@ -1099,33 +1057,6 @@
 </footer>
 
 <script>
-  // ── MATRIX RAIN NO CARD TERMINAL ──
-  const cvs = document.getElementById('matrix-card');
-  const ctx = cvs.getContext('2d');
-  const fs  = 9;
-  let drops;
-
-  function resize() {
-    cvs.width  = cvs.offsetWidth  || 300;
-    cvs.height = cvs.offsetHeight || 160;
-    drops = Array(Math.floor(cvs.width / fs)).fill(1);
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-
-  const matrixInterval = setInterval(() => {
-    ctx.fillStyle = 'rgba(5,10,5,0.07)';
-    ctx.fillRect(0, 0, cvs.width, cvs.height);
-    ctx.fillStyle = '#00ff41';
-    ctx.font = fs + 'px Courier New';
-    drops.forEach((y, i) => {
-      ctx.fillText(Math.random() > 0.5 ? '1' : '0', i * fs, y * fs);
-      if (y * fs > cvs.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    });
-  }, 50);
-
   // ── BOOT ──
   const bootEl = document.getElementById('boot');
   const VERSAO = bootEl.classList.contains('boot-versao-b') ? 'B' : 'A';
@@ -1190,8 +1121,6 @@
   function navegar(destino) {
     if (navegando) return;
     navegando = true;
-
-    clearInterval(matrixInterval);
 
     const blackout = document.getElementById('tx-blackout');
     const linha    = document.getElementById('tx-line');
